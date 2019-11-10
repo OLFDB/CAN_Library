@@ -1,5 +1,5 @@
 /*
-    Copyright © 2007-2015 Fabian Greif, David Harding, Kyle Crockett,
+    Copyright ï¿½ 2007-2015 Fabian Greif, David Harding, Kyle Crockett,
     Nuno Alves, Stevenh, Collin Kidder, Daniel Kasamis, Cory Fowler, teachop,
     Pedro Cevallos, Neil McNeight
 
@@ -63,7 +63,11 @@ DATE      VER   WHO   WHAT
 #define _CAN_H_
 
 #include <inttypes.h>
+#ifndef NORDIC_CAN
 #include <Arduino.h>
+#else
+#include "SPI_nordic.h"
+#endif
 
 // From the spec
 #define CAN_DOMINANT                   0
@@ -88,16 +92,18 @@ DATE      VER   WHO   WHAT
 #define CAN_BPS_1M                     1000000
 #define CAN_BPS_1000K                  1000000
 #define CAN_BPS_800K                   800000
+#define CAN_BPS_666K				   666666
 #define CAN_BPS_500K                   500000
 #define CAN_BPS_250K                   250000
 #define CAN_BPS_200K                   200000
 #define CAN_BPS_125K                   125000
 #define CAN_BPS_100K                   100000
-#define CAN_BPS_83K                    83333  // According to ARINC 825, this is a thing
+#define CAN_BPS_95K					   95000
+#define CAN_BPS_83K33                  83333  // According to ARINC 825, this is a thing
 #define CAN_BPS_80K                    80000
 #define CAN_BPS_50K                    50000
 #define CAN_BPS_40K                    40000
-#define CAN_BPS_33333                  33333
+#define CAN_BPS_33K3                   33333
 #define CAN_BPS_31K25                  31250
 #define CAN_BPS_25K                    25000
 #define CAN_BPS_20K                    20000
@@ -132,8 +138,8 @@ typedef struct __attribute__((__packed__))
 
 // From http://www.cse.dmu.ac.uk/~eg/tele/CanbusIDandMask.html
 //
-// CANBUS is a two-wire, half-duplex, bus based LAN system that is ‘collision
-// free’. Data is BROADCAST onto the bus -THERE IS NO SUCH THNG AS A POINT TO
+// CANBUS is a two-wire, half-duplex, bus based LAN system that is ï¿½collision
+// freeï¿½. Data is BROADCAST onto the bus -THERE IS NO SUCH THNG AS A POINT TO
 // POINT CONNECTION as with data LANs. All nodes receive all broadcast data
 // and decide whether or not that data is relevant.
 // A receiving node would examine the identifier to decide if it was relevant
@@ -182,42 +188,46 @@ typedef struct __attribute__((__packed__))
   uint8_t data[2];        // Filter / Mask for message data
 } CAN_Filter;             // suffix of '_t' is reserved by POSIX for future use
 
+//GCC will define the vtable only in the translation unit that contains the first (in declaration order)
+//non-inline virtual function, which in many cases will be the destructor (often class definitions start
+//with constructors/destructors) â€“ David RodrÃ­guez - dribeas Mar 13 '14 at 2:28
 
 class CANClass // Can't inherit from Stream
 {
   public:
+//	CANClass(uint8_t CS_Pin);
     // Initializes CAN communications.
-    virtual void begin(uint32_t bitrate);
+    virtual void begin(uint32_t bitrate){}; //OK
     // Finishes CAN communications
-    virtual void end();
+    virtual void end(){};  //OK
     // Check if message has been received on any of the buffers
-    virtual uint8_t available();
+    virtual uint8_t available(){}; //OK
     // Receive CAN message and allows use of the message structure for easier message handling
-    virtual CAN_Frame read();
+    virtual CAN_Frame read(){}; //OK
 
-    virtual void flush();
+    virtual void flush(){};  //OK
     // Load and send CAN message.
-    virtual uint8_t write(const CAN_Frame&);
+    virtual uint8_t write(const CAN_Frame&){}; // OK
 
     //CAN_Frame& operator=(const CAN_Frame&);
 
     // Experimental
     //
-    virtual void setMask(uint8_t maskID, CAN_Filter mask);
+    virtual void setMask(uint8_t maskID, CAN_Filter mask){}; //OK
     //
-    virtual void setMask(CAN_Filter mask);
+    virtual void setMask(CAN_Filter mask){};  //inline
     //
-    virtual void clearMask(uint8_t maskID = 0);
+    virtual void clearMask(uint8_t maskID = 0){};	//OK
     //
-    virtual void setFilter(uint8_t filterID, CAN_Filter filter);
+    virtual void setFilter(uint8_t filterID, CAN_Filter filter){}; //OK
     //
-    virtual void setFilter(CAN_Filter filter);
+    virtual void setFilter(CAN_Filter filter){}; //OK
     //
-    virtual void clearFilter(uint8_t filterID = 0);
+    virtual void clearFilter(uint8_t filterID = 0){}; //OK
     //
-    virtual void enableRXInterrupt();
+    virtual void enableRXInterrupt(){};  //OK
     //
-    virtual void disableRXInterrupt();
+    virtual void disableRXInterrupt(){};  //OK
 };
 
 // Too many other libraries already define CAN.
@@ -229,7 +239,7 @@ class CANClass // Can't inherit from Stream
 /**********************************************************/
 /*     8 bit AVR-based boards                             */
 /**********************************************************/
-#if defined(__AVR__)
+#if defined(__AVR__) || defined (NORDIC_CAN)
 
 #if defined(__AVR_AT90CAN32__) || \
     defined(__AVR_AT90CAN64__) || \
@@ -246,7 +256,9 @@ class CANClass // Can't inherit from Stream
 #else // Assume it's an AVR with SPI interface
 //#if defined(MCP2515)
 #define CAN_CONTROLLER_MCP2515 // SPI interface to MCP2515 chip
+#ifndef NORDIC_CAN
 #include <SPI.h>
+#endif
 #include "CAN_MCP2515.h"
 //#elif defined(SJA1000) // 8-bit parallel interface to SJA1000 chip
 //#define CAN_CONTROLLER_SJA1000

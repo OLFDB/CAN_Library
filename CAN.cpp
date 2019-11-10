@@ -61,6 +61,44 @@ DATE      VER   WHO   WHAT
 
 #include "CAN.h"
 
+
+
+//    // Initializes CAN communications.
+//     void CANClass::begin(uint32_t bitrate){
+//
+//     }; //OK
+//    // Finishes CAN communications
+//     void CANClass::end();  //OK
+//    // Check if message has been received on any of the buffers
+//     uint8_t CANClass::available(); //OK
+//    // Receive CAN message and allows use of the message structure for easier message handling
+//     CAN_Frame read(); //OK
+//
+//     void CANClass::flush();  //OK
+//    // Load and send CAN message.
+//     uint8_t CANClass::write(const CAN_Frame&); // OK
+//
+//    //CAN_Frame& operator=(const CAN_Frame&);
+//
+//    // Experimental
+//    //
+//     void CANClass::setMask(uint8_t maskID, CAN_Filter mask); //OK
+//    //
+//     void CANClass::setMask(CAN_Filter mask);  //inline
+//    //
+//     void CANClass::clearMask(uint8_t maskID = 0);	//OK
+//    //
+//     void CANClass::setFilter(uint8_t filterID, CAN_Filter filter); //OK
+//    //
+//     void CANClass::setFilter(CAN_Filter filter); //OK
+//    //
+//     void CANClass::clearFilter(uint8_t filterID = 0); //OK
+//    //
+//     void CANClass::enableRXInterrupt();  //OK
+//    //
+//     void CANClass::disableRXInterrupt();  //OK
+
+
 //CAN_Frame& CANClass::operator=(const CAN_Frame&)
 //{
 //}
