@@ -1,3 +1,21 @@
+Added support for Nordic Semiconductor SDK
+
+Use 
+
+CFLAGS += -DARDUINO_ARCH_AVR
+CFLAGS += -DNORDIC_CAN 
+
+in your Makefile.
+
+Added support for further clock frequencies. List of available frequencies:
+
+#define MCP_20MHZ    0
+#define MCP_16MHZ    1
+#define MCP_10MHZ    2
+#define MCP_8MHZ     3
+#define MCP_4MHZ     4
+
+
 # CAN_Library [![Build Status](https://travis-ci.org/McNeight/CAN_Library.svg?branch=master)](https://travis-ci.org/McNeight/CAN_Library)
 
 This library supports the [Controller Area Network (CAN bus or CAN)](https://en.wikipedia.org/wiki/CAN_bus) and allows you to communicate with multiple types of CAN controllers using a consistent API, making CAN communications across development platforms easier through Arduino.
