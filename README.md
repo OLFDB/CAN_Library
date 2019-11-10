@@ -1,5 +1,7 @@
 Added support for Nordic Semiconductor SDK
 
+Tested with SDK 15.3.0
+
 Use 
 
 CFLAGS += -DARDUINO_ARCH_AVR
@@ -7,7 +9,9 @@ CFLAGS += -DNORDIC_CAN
 
 in your Makefile.
 
-Added support for further clock frequencies. List of available frequencies:
+Added support for further clock frequencies. Settings taken from https://github.com/Mebus/CAN_BUS_Shield-1 
+
+List of available frequencies:
 
 #define MCP_20MHZ    0
 #define MCP_16MHZ    1
